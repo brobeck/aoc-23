@@ -1,6 +1,8 @@
 use std::fs;
 use std::cmp;
 use std::time::Instant;
+use std::collections::{HashMap, HashSet};
+use std::hash::{Hash, Hasher};
 
 fn main() {
     let start_time = Instant::now();
@@ -10,7 +12,18 @@ fn main() {
     println!("Execution time: {:?}", duration);
 }
 
-fn _adjacent_symbol(row: usize, col: usize, grid: &[[char; 140]; 140]) -> bool {
+#[derive(Hash, Eq, PartialEq, Debug)]
+struct StarLocation {
+    row: usize,
+    col: usize
+}
+
+struct StarTest {
+    n_neigh_numbers: i32,
+    tally_neigh_numbers: i32
+}
+
+fn _adjacent_symbol_3_2(row: usize, col: usize, grid: &[[char; 140]; 140]) -> bool {
     for r in [cmp::max(row, 1) - 1, row, cmp::min(row, 138) + 1] {
         for c in [cmp::max(col, 1) - 1, col, cmp::min(col, 138) + 1]  {
             let grid_value = grid[r][c];
@@ -22,7 +35,7 @@ fn _adjacent_symbol(row: usize, col: usize, grid: &[[char; 140]; 140]) -> bool {
     false
 }
 
-fn _day_3_1() {
+fn _day_3_2() {
     let input = fs::read_to_string("input_3.txt").unwrap();
 
     const N_ROWS: usize = 140;
@@ -45,13 +58,13 @@ fn _day_3_1() {
         for (number_index, number) in row.match_indices(char::is_numeric) {
             if number_index == last_index + 1 || last_index == 0 {
                 current_number = current_number * 10 + number.parse::<i32>().unwrap();
-                current_is_part |= _adjacent_symbol(row_index, number_index, &grid);
+                current_is_part |= _adjacent_symbol_3_2(row_index, number_index, &grid);
             } else {
                 if current_is_part {
                     current_sum += current_number
                 }
                 current_number = number.parse::<i32>().unwrap();
-                current_is_part = _adjacent_symbol(row_index, number_index, &grid);
+                current_is_part = _adjacent_symbol_3_2(row_index, number_index, &grid);
             }
             last_index = number_index;
         }
@@ -62,6 +75,65 @@ fn _day_3_1() {
     }
 
     println!("{current_sum}")
+} 
+
+fn _is_symbol(c: char) -> bool {
+    !(c.is_numeric() || c == '.')
+}
+
+fn _adjacent_symbol(row: usize, col: usize, grid: &[[char; 140]; 140]) -> bool {
+    let min_row = row.saturating_sub(1);
+    let max_row = (row + 1).min(139);
+    let min_col = col.saturating_sub(1);
+    let max_col = (col + 1).min(139);
+
+    for r in min_row..=max_row {
+        for c in min_col..=max_col {
+            if (r != row || c != col) && _is_symbol(grid[r][c]) {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+fn _day_3_1() {
+    let input = fs::read_to_string("input_3.txt").unwrap();
+
+    const N_ROWS: usize = 140;
+    const N_COLS: usize = 140;
+    let mut grid: [[char; 140]; 140] = [[' '; N_COLS]; N_ROWS];
+
+    for (row_index, row) in input.lines().enumerate() {
+        for (col_index, char_val) in row.chars().enumerate() {
+            grid[row_index][col_index] = char_val
+        }
+    }
+    
+    let mut current_sum = 0;
+    let mut current_number = 0;
+    let mut current_is_part = false;
+
+    for (row_index, row) in input.lines().enumerate() {
+        let mut char_iter = row.match_indices(char::is_numeric).peekable(); 
+
+        while let Some((col_index, number)) = char_iter.next() {
+            let number: i32 = number.parse().unwrap();
+            current_number = current_number * 10 + number;
+            current_is_part |= _adjacent_symbol(row_index, col_index, &grid);
+
+            if char_iter.peek().map_or(true, |(next_index, _)| *next_index != col_index + 1) {
+                if current_is_part {
+                    current_sum += current_number;
+                }
+
+                current_number = 0;
+                current_is_part = false;
+            }
+        }
+    }
+
+    println!("{}", current_sum)
 }
 
 fn _day_2_2() {
