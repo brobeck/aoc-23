@@ -55,7 +55,7 @@ fn add_adjacent_stars(
 }
 
 fn solve_task_2() {
-    let input = fs::read_to_string("input_3.txt").unwrap();
+    let input = fs::read_to_string("inputs/input_3.txt").unwrap();
 
     const N_ROWS: usize = 140;
     const N_COLS: usize = 140;
@@ -124,7 +124,7 @@ fn adjacent_symbol(row: usize, col: usize, grid: &[[char; 140]; 140]) -> bool {
 }
 
 fn solve_task_1() {
-    let input = fs::read_to_string("input_3.txt").unwrap();
+    let input = fs::read_to_string("inputs/input_3.txt").unwrap();
 
     const N_ROWS: usize = 140;
     const N_COLS: usize = 140;

@@ -12,7 +12,7 @@ pub fn run(task: &str) {
 }
 
 fn solve_task_1() {
-    let input = fs::read_to_string("input.txt").unwrap();
+    let input = fs::read_to_string("inputs/input_1.txt").unwrap();
 
     let ans: u32 = input
         .lines()
@@ -48,7 +48,7 @@ fn solve_task_2() {
         ("9", 9),
     ];
 
-    let input = fs::read_to_string("input.txt").unwrap();
+    let input = fs::read_to_string("inputs/input_1.txt").unwrap();
 
     let ans = input
         .lines()

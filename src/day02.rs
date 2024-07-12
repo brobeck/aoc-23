@@ -12,7 +12,7 @@ pub fn run(task: &str) {
 }
 
 fn solve_task_2() {
-    let input = fs::read_to_string("input_2.txt").unwrap();
+    let input = fs::read_to_string("inputs/input_2.txt").unwrap();
 
     let ans: i32 = input
         .lines()
@@ -79,7 +79,7 @@ fn _count_for_game(line: &str) -> i32 {
 }
 
 fn solve_task_1() {
-    let input = fs::read_to_string("input_2.txt").unwrap();
+    let input = fs::read_to_string("inputs/input_2.txt").unwrap();
 
     let ans: i32 = input.lines().map(_count_for_game).sum();
 
